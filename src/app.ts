@@ -6,7 +6,7 @@ const app = express();
 init()
     .then(async () => {
         console.log('MONGODB CONECTED');
-        app.listen(3000, () => console.log('Serveer ready'));
+        app.listen(process.env.PORT || 3000, () => console.log('Serveer ready'));
     })
     .catch(err => console.error('Error MONGODB', err));
 
