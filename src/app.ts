@@ -14,7 +14,7 @@ app.get('/', async (req, res) => {
 
     const projects = await new ProjectDAO().findAll();
     const responses = await Promise.all(projects.map(proj => new PingService().ping(proj.url)));
-    // responses.forEach((res, idx) => console.log(`response`, projects[idx].name, res.success, res.status, res.time));
+    responses.forEach((res, idx) => console.log(`response`, projects[idx].name, res.success, res.status, res.time, res.response));
 
     res.send([
         '<html><body>',
