@@ -10,9 +10,13 @@ init()
     })
     .catch(err => console.error('Error MONGODB', err));
 
-app.get('/', async (req, res) => {
+app.get('/', async (req: express.Request, res: express.Response) => {
 
-    const projects = await new ProjectDAO().findAll();
+    console.log('ROLES', (req.query.roles || '').split(','))
+
+    const projects = await new ProjectDAO().findAll(
+        req.query.roles ? req.query.roles.split(',') : []
+    );
     const stats = await new PingDAO().stats();
     
     res.send([

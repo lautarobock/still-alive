@@ -27,8 +27,10 @@ export class ProjectDAO {
         this.db = client.db('still-alive');
     }
 
-    findAll() {
-        return this.db.collection<Project>('projects').find().toArray();
+    findAll(roles?: string[]) {
+        return this.db.collection<Project>('projects').find(
+            roles ? {roles: {$in: roles}} : {}
+        ).toArray();
     }
 }
 
