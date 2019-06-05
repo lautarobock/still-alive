@@ -23,11 +23,11 @@ app.get('/', async (req: express.Request, res: express.Response) => {
         '<html><body>',
         '<center><h1>Project Status</h1></center>',
         '<table style="width: 50%; margin-left: auto; margin-right: auto; margin-top: 3em;" border="1">',
-            '<thead style="text-align: left;"><tr><th>Project</th><th>Status</th><th>Last Updated</th><th>Last Delay</th><th>AVG Delay</th><th>Count</th><th>Fails</th></tr></thead>',
+            '<thead style="text-align: left;"><tr><th>Project</th><th>Status</th><th>Last Updated</th><th>Last Alive</th><th>Last Delay</th><th>AVG Delay</th><th>Count</th><th>Fails</th></tr></thead>',
             '<tbody>',
             projects.map((project, idx) =>{
                 const stat = stats.find(s => s._id.toString() === project._id.toString()) || {} as any;
-                return `<tr><tr><td>${projects[idx].name}</td><td>${stat.success ? 'OK' : 'FAIL'} (${stat.status})</td><td>${new Date(stat.timestamp).toLocaleString()}</td><td>${stat.time}ms</td><td>${Math.round(stat.avg)}ms</td><td>${stat.count}</td><td>${stat.fails} (${Math.round(100 * stat.fails/stat.count)}%)</td></tr>`
+                return `<tr><tr><td>${projects[idx].name}</td><td>${stat.success ? 'OK' : 'FAIL'} (${stat.status})</td><td>${new Date(stat.timestamp).toLocaleString()}</td><td>${new Date(project.lastAlive).toLocaleString()}</td><td>${stat.time}ms</td><td>${Math.round(stat.avg)}ms</td><td>${stat.count}</td><td>${stat.fails} (${Math.round(100 * stat.fails/stat.count)}%)</td></tr>`
             }).join(''),
             '</tbody>',
         '</table>',
