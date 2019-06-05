@@ -55,6 +55,10 @@ export class PingDAO {
             {
                 $group: {
                     _id: '$project',
+                    success: {$last: '$success'},
+                    status: {$last: '$status'},
+                    time: {$last: '$time'},
+                    timestamp: {$last: '$timestamp'},
                     count: { $sum: 1 },
                     avg: { $avg: '$time' },
                     fails: { $sum: { $cond: { if: '$success', then: 0, else: 1 } } }
