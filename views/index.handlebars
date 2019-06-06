@@ -6,8 +6,8 @@
         <tr>
             <th>Project</th>
             <th>Status</th>
-            <th>Last Updated</th>
-            <th>Last Alive</th>
+            <th title="Buenos aires time zone">Last Updated*</th>
+            <th title="Buenos aires time zone">Last Alive*</th>
             <th>Last Delay</th>
             <th>AVG Delay</th>
             <th>Count</th>
@@ -21,8 +21,8 @@
             <td class="{{isAliveClass this.stat.success}}">
                 {{isAlive this.stat.success}} ({{this.stat.status}})
             </td>
-            <td>{{date this.stat.timestamp}}</td>
-            <td>{{date this.lastAlive}}</td>
+            <td title="Buenos aires time zone">{{date this.stat.timestamp}}</td>
+            <td title="Buenos aires time zone">{{date this.lastAlive}}</td>
             <td>
                 {{#if this.stat.time}}
                     {{this.stat.time}}ms
@@ -35,4 +35,9 @@
         </tr>
         {{/each}}
     </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="8">* Buenos Aires time zone</td>
+        </tr>
+    </tfoot>
 </table>

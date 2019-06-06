@@ -1,6 +1,7 @@
 import * as express from 'express';
 import * as exphbs from 'express-handlebars';
 import { ProjectDAO, init, close, PingDAO } from './model';
+import * as moment from 'moment-timezone';
 const app = express();
 
 init()
@@ -28,7 +29,7 @@ app.get('/', async (req: express.Request, res: express.Response) => {
     res.render('index', {
         projects,
         helpers: {
-            date: date => new Date(date).toLocaleString(),
+            date: date => moment.tz(new Date(date), 'America/Argentina/Buenos_Aires').format('DD/MM/YYYY HH:mm'),
             round: number => Math.round(number),
             percent: (amount, total) => Math.round(100 * amount / total),
             isAlive: isAlive => isAlive ? 'OK' : 'FAIL',
