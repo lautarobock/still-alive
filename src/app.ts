@@ -1,10 +1,13 @@
 import * as express from 'express';
+import * as exphbs from 'express-handlebars';
 import { ProjectDAO, init, close, PingDAO } from './model';
 const app = express();
 
 init()
     .then(async () => {
         console.log('MONGODB CONECTED');
+        app.engine('handlebars', exphbs());
+        app.set('view engine', 'handlebars');
         app.use(express.static('public'))
         app.listen(process.env.PORT || 3000, () => console.log('Serveer ready'));
     })
@@ -18,33 +21,20 @@ app.get('/', async (req: express.Request, res: express.Response) => {
         req.query.roles ? req.query.roles.split(',') : []
     );
     const stats = await new PingDAO().stats();
-    
-    res.send([
-        `<html>
-        <head>
-            <link rel="stylesheet" href="css/styles.css">
-        </head>
-        <body>`,
-        '<center><h1>Project Status</h1></center>',
-        '<table>',
-            '<thead style="text-align: left;"><tr><th>Project</th><th>Status</th><th>Last Updated</th><th>Last Alive</th><th>Last Delay</th><th>AVG Delay</th><th>Count</th><th>Fails</th></tr></thead>',
-            '<tbody>',
-            projects.map((project, idx) =>{
-                const stat = stats.find(s => s._id.toString() === project._id.toString()) || {} as any;
-                return `<tr>
-                    <tr><td>${projects[idx].name}</td>
-                    <td class="${stat.success ? 'success' : 'fail'}">${stat.success ? 'OK' : 'FAIL'} (${stat.status})</td>
-                    <td>${new Date(stat.timestamp).toLocaleString()}</td>
-                    <td>${new Date(project.lastAlive).toLocaleString()}</td>
-                    <td>${stat.time}ms</td>
-                    <td>${Math.round(stat.avg)}ms</td>
-                    <td>${stat.count}</td><td>${stat.fails} (${Math.round(100 * stat.fails/stat.count)}%)</td>
-                </tr>`
-            }).join(''),
-            '</tbody>',
-        '</table>',
-        '</body></html>'
-    ].join(''));
+    projects.forEach(project => {
+        const stat = stats.find(s => s._id.toString() === project._id.toString()) || {} as any;
+        (project as any).stat = stat;
+    });
+    res.render('index', {
+        projects,
+        helpers: {
+            date: date => new Date(date).toLocaleString(),
+            round: number => Math.round(number),
+            percent: (amount, total) => Math.round(100 * amount / total),
+            isAlive: isAlive => isAlive ? 'OK' : 'FAIL',
+            isAliveClass: isAlive => isAlive ? 'success' : 'fail'
+        }
+    });
 });
 
 process.on('exit', function () {
