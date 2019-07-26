@@ -32,7 +32,7 @@ export class ProjectDAO {
     }
 
     findNotAliveToNotify() {
-        return this.collection.find({ isAlive: { $ne: true }, 'notifications.0': { $exists: true } }).toArray();
+        return this.collection.find({ disabled: { $ne: true }, isAlive: { $ne: true }, 'notifications.0': { $exists: true } }).toArray();
     }
 
     findAll(roles?: string[]) {
