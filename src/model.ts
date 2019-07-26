@@ -37,7 +37,7 @@ export class ProjectDAO {
 
     findAll(roles?: string[]) {
         return this.collection.find(
-            roles ? { roles: { $in: roles } } : {}
+            roles ? { roles: { $in: roles }, disabled: { $ne: true } } : { disabled: { $ne: true } },
         ).toArray();
     }
 

@@ -16,24 +16,21 @@ init()
 
 app.get('/', async (req: express.Request, res: express.Response) => {
 
-    console.log('ROLES', (req.query.roles || '').split(','))
-
     const projects = await new ProjectDAO().findAll(
         req.query.roles ? req.query.roles.split(',') : []
     );
     const stats = await new PingDAO().stats();
-    projects.forEach(project => {
-        const stat = stats.find(s => s._id.toString() === project._id.toString()) || {} as any;
-        (project as any).stat = stat;
-    });
+    projects.forEach((project: any) =>
+        project.stat = stats.find(s => s._id.toString() === project._id.toString()) || {} as any
+    );
     res.render('index', {
         projects,
         helpers: {
-            date: date => moment.tz(new Date(date), 'America/Argentina/Buenos_Aires').format('DD/MM/YYYY HH:mm'),
-            round: number => Math.round(number),
-            percent: (amount, total) => Math.round(100 * amount / total),
-            isAlive: isAlive => isAlive ? 'OK' : 'FAIL',
-            isAliveClass: isAlive => isAlive ? 'success' : 'fail'
+            date: (date: string | number | Date) => moment.tz(new Date(date), 'America/Argentina/Buenos_Aires').format('DD/MM/YYYY HH:mm'),
+            round: (number: number) => Math.round(number),
+            percent: (amount: number, total: number) => Math.round(100 * amount / total),
+            isAlive: (isAlive: boolean) => isAlive ? 'OK' : 'FAIL',
+            isAliveClass: (isAlive: boolean) => isAlive ? 'success' : 'fail'
         }
     });
 });
