@@ -5,7 +5,7 @@ export class MailService {
 
     private transporter: Transporter;
     private readonly user = 'still.alive.no.reply';
-    private readonly pass = 'Estrella@713';
+    private readonly pass = process.env.EMAIL_PASS;
     private readonly from = `Still Alive <${this.user}>`;
 
     constructor() {
